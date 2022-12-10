@@ -1,0 +1,19 @@
+﻿<Properties GitUserInfo="UsingMD" StartupConfiguration="{A15BCDCC-D47F-456B-8EE2-FF6480D29996}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Geometry/Program.cs">
+    <Files>
+      <File FileName="Geometry/Program.cs" Line="9" Column="21" />
+      <File FileName="Geometry/CustomCollections/Deque.cs" />
+      <File FileName="Geometry/CustomCollections/DStack.cs" />
+      <File FileName="Geometry/CustomCollections/CircularQueue.cs" />
+      <File FileName="Geometry/CustomCollections/DLList.cs" />
+      <File FileName="Geometry/Plane.cs" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.Geometry PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
