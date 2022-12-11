@@ -285,6 +285,21 @@ namespace Geometry
                     }
                     resultPoints = foundPoints.ToArray();
                     return resultPoints;
+
+                    static Tuple<decimal, decimal> CreateOrderedDecimalTuple(decimal entryOne, decimal entryTwo)
+                    {
+                        Tuple<decimal, decimal> resultTuple;
+                        if (entryOne > entryTwo)
+                        {
+                            resultTuple = new Tuple<decimal, decimal>(entryTwo, entryOne);
+                            return resultTuple;
+                        }
+                        else
+                        {
+                            resultTuple = new Tuple<decimal, decimal>(entryOne, entryTwo);
+                            return resultTuple;
+                        }
+                    }
                 }
                 Point FindMostRemovedPoint(Segment edge, Point[] pointsArray)
                 {
@@ -312,33 +327,7 @@ namespace Geometry
                 }
             }
             
-            internal static Tuple<decimal,decimal> CreateOrderedDecimalTuple(decimal entryOne, decimal entryTwo)
-            {
-                Tuple<decimal, decimal> resultTuple;
-                if (entryOne > entryTwo)
-                {
-                    resultTuple = new Tuple<decimal, decimal>(entryTwo, entryOne);
-                    return resultTuple;
-                }
-                else
-                {
-                    resultTuple = new Tuple<decimal, decimal>(entryOne, entryTwo);
-                    return resultTuple;
-                }
-            }
-            internal static Tuple<double, double> CreateOrderedDoubleTuple(double entry1, double entry2)
-            {
-                Tuple<double, double> resultTuple;
-                if (entry1 > entry2)
-                {
-                    resultTuple = new Tuple<double, double>(entry1, entry2);
-                }
-                else
-                {
-                    resultTuple = new Tuple<double, double>(entry2, entry1);
-                }
-                return resultTuple;
-            }
+            
             
 
             public Point GetMaxYPoint()
@@ -650,9 +639,7 @@ namespace Geometry
                 Point point2 = exteriorPoints.Item2;
                 double direction1 = point1.GetRelativeDirection(this);
                 double direction2 = point2.GetRelativeDirection(this);
-                Tuple<double, double> orderedDirectionTuple =
-                    Plane.CreateOrderedDoubleTuple(direction1, direction2);
-                tempAngle = orderedDirectionTuple.Item1 - orderedDirectionTuple.Item2;
+                tempAngle = Math.Abs(direction1 - direction2);
                 if (tempAngle > Math.PI)
                 {
                     resultAngle = (2 * Math.PI) - tempAngle;

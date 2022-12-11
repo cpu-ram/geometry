@@ -25,7 +25,7 @@ namespace Geometry
         public static void TestConvexHull()
         {
             Plane plane = new Plane();
-            Point[] points = new Point[13];
+            Point[] points = new Point[14];
 
             points[0] = new Point(20, 70);
             points[1] = new Point(70, 80);
@@ -40,6 +40,7 @@ namespace Geometry
             points[10] = new Point(80, 20);
             points[11] = new Point(100, 30);
             points[12] = new Point(10, 10);
+            points[13] = new Point(-10, -10);
 
             foreach (Point point in points)
             {
