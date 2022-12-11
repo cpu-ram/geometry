@@ -170,7 +170,6 @@ namespace Geometry
                 return degreesValue;
             }
             
-
             public void FindConvexHull()
             {
                 Point maxY = GetMaxYPoint();
@@ -340,14 +339,7 @@ namespace Geometry
                 }
                 return resultTuple;
             }
-            internal static decimal CalculateValueDifference
-                (Point pointOne, Point pointTwo)
-            {
-                decimal y1 = pointOne.Y;
-                decimal y2 = pointTwo.X;
-                decimal difference = y1 - y2;
-                return difference;
-            }
+            
 
             public Point GetMaxYPoint()
             {
@@ -579,9 +571,8 @@ namespace Geometry
                 }
                 return resultRotationAngle;
             }
-            public double GetRelativeDirection(Point reference)
+            public double GetRelativeDirection(Point reference) //returns an angle
             {
-                double tempValue;
                 double resultValue;
                 if (this.Equals(reference))
                 {
@@ -1573,7 +1564,5 @@ namespace Geometry
         {
             clockwise, counterclockwise
         }
-
-        
     }
 }
