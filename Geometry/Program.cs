@@ -43,7 +43,7 @@ namespace Geometry
             {
                 pointSet.AddPoint(point);
             }
-            pointSet.FindConvexHull();
+            Console.WriteLine(pointSet.FindConvexHull());
         }
         
     }

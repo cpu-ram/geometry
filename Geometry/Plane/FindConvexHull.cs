@@ -7,7 +7,7 @@ namespace Geometry.Plane
 {
     public partial class PointSet
     {
-        public void FindConvexHull()
+        public string FindConvexHull()
         {
             Point maxY = GetMaxYPoint();
             Point maxX = GetMaxXPoint();
@@ -37,9 +37,9 @@ namespace Geometry.Plane
                 counter++;
             }
 
-            Polygon polygon = new Polygon(uniqueExtremePointsArray);
-            ExpandPolygon(ref polygon, this.xToYDictionary);
-            Console.WriteLine(polygon);
+            Polygon resultPolygon = new Polygon(uniqueExtremePointsArray);
+            ExpandPolygon(ref resultPolygon, this.xToYDictionary);
+            return resultPolygon.ToString();
 
             bool ExpandPolygon(ref Polygon polygon, Dictionary<decimal, SortedSet<decimal>> xToYDictionary)
             {
