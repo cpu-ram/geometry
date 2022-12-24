@@ -1,6 +1,6 @@
 ﻿using System;
 using Geometry;
-using Geometry.BiDimentional;
+using Geometry.Plane;
 
 namespace Geometry
 {
@@ -10,13 +10,10 @@ namespace Geometry
         {
             TestConvexHull();
         }
-        static void TestTrigonometry()
-        {
-        }
         public static void TestGeometry()
         {
             decimal height = (decimal)((3 * Math.Sqrt(3)) / 2);
-            Plane plane = new Plane();
+            PointSet plane = new PointSet();
             Point point1 = new Point(10, 10);
             Point point2 = new Point(110, 70);
             Line newLine = new Line(point1, point2);
@@ -24,7 +21,7 @@ namespace Geometry
         }
         public static void TestConvexHull()
         {
-            Plane plane = new Plane();
+            PointSet pointSet = new PointSet();
             Point[] points = new Point[14];
 
             points[0] = new Point(20, 70);
@@ -44,9 +41,9 @@ namespace Geometry
 
             foreach (Point point in points)
             {
-                plane.AddPoint(point);
+                pointSet.AddPoint(point);
             }
-            plane.FindConvexHull();
+            pointSet.FindConvexHull();
         }
         
     }

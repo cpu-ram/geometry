@@ -8,5 +8,9 @@
   <ItemGroup>
     <Folder Include="CustomCollections\" />
     <Folder Include="CustomCollections\" />
+    <Folder Include="Plane\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Plane\" />
   </ItemGroup>
 </Project>

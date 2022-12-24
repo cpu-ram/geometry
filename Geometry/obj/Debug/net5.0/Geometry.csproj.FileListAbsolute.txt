@@ -42,3 +42,4 @@
 /Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/obj/Debug/net5.0/ref/Geometry.dll
 /Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/obj/Debug/net5.0/Geometry.pdb
 /Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/obj/Debug/net5.0/Geometry.genruntimeconfig.cache
+/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/obj/Debug/net5.0/Geometry.csproj.AssemblyReference.cache
