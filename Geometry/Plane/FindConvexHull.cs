@@ -20,18 +20,18 @@ namespace Geometry.Plane
             extremePointsArray[2] = minY;
             extremePointsArray[3] = minX;
 
-            HashSet<Point> pointsSet = new HashSet<Point>();
+            HashSet<Point> extremePointsSet = new HashSet<Point>();
             foreach (Point point in extremePointsArray)
             {
-                if (!pointsSet.Contains(point))
+                if (!extremePointsSet.Contains(point))
                 {
-                    pointsSet.Add(point);
+                    extremePointsSet.Add(point);
                 }
             }
-            int pointsSetCount = pointsSet.Count;
+            int pointsSetCount = extremePointsSet.Count;
             Point[] uniqueExtremePointsArray = new Point[pointsSetCount];
             int counter = 0;
-            foreach (Point point in pointsSet)
+            foreach (Point point in extremePointsSet)
             {
                 uniqueExtremePointsArray[counter] = point;
                 counter++;
@@ -40,6 +40,8 @@ namespace Geometry.Plane
             Polygon resultPolygon = new Polygon(uniqueExtremePointsArray);
             ExpandPolygon(ref resultPolygon, this.xToYDictionary);
             return resultPolygon.ToString();
+
+
 
             bool ExpandPolygon(ref Polygon polygon, Dictionary<decimal, SortedSet<decimal>> xToYDictionary)
             {
@@ -86,9 +88,9 @@ namespace Geometry.Plane
 
                 Tuple<Point, Point> edgeVertices = edge.GetPoints();
                 Tuple<decimal, decimal> xLimits =
-                    CreateOrderedDecimalTuple(edgeVertices.Item1.X, edgeVertices.Item2.X);
+                    CreateOrderedDecimalTuple(edgeVertices.Item1.x, edgeVertices.Item2.x);
                 Tuple<decimal, decimal> yLimits =
-                    CreateOrderedDecimalTuple(edgeVertices.Item1.Y, edgeVertices.Item2.Y);
+                    CreateOrderedDecimalTuple(edgeVertices.Item1.y, edgeVertices.Item2.y);
                 SortedSet<decimal> xPositionsWithinRange =
                     xSet.GetViewBetween(xLimits.Item1, xLimits.Item2);
 

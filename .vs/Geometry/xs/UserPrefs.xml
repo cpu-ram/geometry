@@ -1,19 +1,16 @@
 ﻿<Properties GitUserInfo="UsingMD" StartupConfiguration="{A15BCDCC-D47F-456B-8EE2-FF6480D29996}|Default">
   <MonoDevelop.Ide.Workbench ActiveDocument="Geometry/Plane/Plane.cs">
     <Files>
-      <File FileName="Geometry/Program.cs" Line="23" Column="10" />
-      <File FileName="Geometry/Plane.cs" Line="95" Column="41" />
-      <File FileName="Geometry/CustomCollections/Deque.cs" />
-      <File FileName="Geometry/CustomCollections/DStack.cs" />
-      <File FileName="Geometry/CustomCollections/CircularQueue.cs" Line="1" Column="1" />
-      <File FileName="Geometry/CustomCollections/DLList.cs" />
-      <File FileName="Geometry/Plane/FindConvexHull.cs" Line="1" Column="1" />
+      <File FileName="Geometry/Program.cs" Line="17" Column="13" />
+      <File FileName="Geometry/Plane/FindConvexHull.cs" />
+      <File FileName="Geometry/Plane/Plane.cs" Line="576" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Geometry" expanded="True">
             <Node name="Geometry" expanded="True">
+              <Node name="CustomCollections" expanded="True" />
               <Node name="Plane" expanded="True">
                 <Node name="Plane.cs" selected="True" />
               </Node>
@@ -23,7 +20,11 @@
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
-          <Value>StreamReader(Request.InputStream).ReadToEnd()</Value>
+          <Value>intersectionsNumber1</Value>
+          <Value>intersectionsNumber2</Value>
+          <Value>pathFromSide1</Value>
+          <Value>pathFromSide2</Value>
+          <Value>polygon</Value>
         </State>
       </Pad>
     </Pads>
@@ -32,7 +33,9 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Plane/Plane.cs" relfile="Geometry/Plane/Plane.cs" line="1070" column="9" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
 </Properties>

@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using CustomCollections;
+using Newtonsoft.Json;
 
 namespace Geometry.Plane
 {
@@ -21,22 +22,21 @@ namespace Geometry.Plane
             this.xSet = new SortedSet<decimal>();
             this.ySet = new SortedSet<decimal>();
 
-            decimal currentX;
-            decimal currentY;
-            foreach(Point point in points)
+            HashSet<Point> pointsSet = new HashSet<Point>(points);
+
+            foreach(Point point in pointsSet)
             {
                 AddPoint(point);
             }
         }
-        public PointSet(string jsonPoints)
+        public PointSet(string jsonPoints) : this(Newtonsoft.Json.JsonConvert.DeserializeObject<Point[]>(jsonPoints)) // in progress!
         {
-
         }
-            
+
         public void AddPoint(Point entryPoint)
         {
-            decimal x = entryPoint.X;
-            decimal y = entryPoint.Y;
+            decimal x = entryPoint.x;
+            decimal y = entryPoint.y;
 
             // checking if the position is occupied
             if(xToYDictionary.ContainsKey(x)
@@ -70,8 +70,8 @@ namespace Geometry.Plane
         }
         public void RemovePoint(Point query)
         {
-            decimal x = query.X;
-            decimal y = query.Y;
+            decimal x = query.x;
+            decimal y = query.y;
             // checking 'integrity'
             if ((xToYDictionary[x].Contains(y)) ^
                     (yToXDictionary[y].Contains(x)))
@@ -120,11 +120,11 @@ namespace Geometry.Plane
         public Point GetMinYPoint()
         {
             decimal minY = ySet.Min;
-            SortedSet<decimal> maxYValues = yToXDictionary[minY];
-            IEnumerator<decimal> enumerator = maxYValues.GetEnumerator();
+            SortedSet<decimal> minYValues = yToXDictionary[minY];
+            IEnumerator<decimal> enumerator = minYValues.GetEnumerator();
             enumerator.MoveNext();
             decimal firstAvailableValue = enumerator.Current;
-            Point resultPoint = new Point(minY, firstAvailableValue);
+            Point resultPoint = new Point(firstAvailableValue, minY);
             return resultPoint;
         }
         public Point GetMinXPoint()
@@ -157,13 +157,8 @@ namespace Geometry.Plane
         public override string ToString()
         {
             Point[] allPoints = this.GetPoints();
-            StringBuilder sb = new StringBuilder();
-            foreach(Point point in allPoints)
-            {
-                string tempString = "{" +point+ "}";
-                sb.Append(tempString);
-            }
-            return sb.ToString();
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(allPoints);
+            return jsonString;
         }
     }
     public class Point
@@ -171,27 +166,29 @@ namespace Geometry.Plane
         private decimal xCoordinate;
         private decimal yCoordinate;
 
+        [Newtonsoft.Json.JsonConstructorAttribute]
         public Point(decimal x, decimal y)
         {
-            this.X = Math.Round(x,10);
-            this.Y = Math.Round(y,10);
-        }
-        public Point(Point reference)
-        {
-            this.X = reference.X;
-            this.Y = reference.Y;
+            this.x = Math.Round(x,10);
+            this.y = Math.Round(y,10);
         }
 
-        public decimal X { get => xCoordinate; set => xCoordinate = value; }
-        public decimal Y { get => yCoordinate; set => yCoordinate = value; }
+        public Point(Point reference)
+        {
+            this.x = reference.x;
+            this.y = reference.y;
+        }
+
+        public decimal x { get => xCoordinate; set => xCoordinate = value; }
+        public decimal y { get => yCoordinate; set => yCoordinate = value; }
 
         public bool Equals(Point anotherPoint)
         {
             decimal errorMargin = (decimal)(Math.Pow(10, -10));
             NumeralInterval errorMarginInterval =
                 new NumeralInterval(-errorMargin,true, errorMargin, true);
-            decimal xDifference = this.X - anotherPoint.X;
-            decimal yDifference = this.Y - anotherPoint.Y;
+            decimal xDifference = this.x - anotherPoint.x;
+            decimal yDifference = this.y - anotherPoint.y;
 
             bool xDifferenceIsWithinErrorMargin = errorMarginInterval.Contains(xDifference);
             bool yDifferenceIsWithinErrorMargin = errorMarginInterval.Contains(yDifference);
@@ -208,13 +205,13 @@ namespace Geometry.Plane
         }
         public override int GetHashCode()
         {
-            int resultHashCode = (X.GetHashCode() + Y).GetHashCode();
+            int resultHashCode = (x.GetHashCode() + y).GetHashCode();
             return resultHashCode;
         }
         public int CompareTo(Point anotherPoint)
         {
-            int comparisonByX = (this.X).CompareTo(anotherPoint.X);
-            int comparisonByY = (this.Y).CompareTo(anotherPoint.Y);
+            int comparisonByX = (this.x).CompareTo(anotherPoint.x);
+            int comparisonByY = (this.y).CompareTo(anotherPoint.y);
 
             switch (comparisonByX)
             {
@@ -241,8 +238,8 @@ namespace Geometry.Plane
         public QuadrantPosition GetRelativeQuadrantPosition(Point referencePoint)
         {
             QuadrantPosition resultDirection;
-            int xComparison = this.X.CompareTo(referencePoint.X);
-            int yComparison = this.Y.CompareTo(referencePoint.Y);
+            int xComparison = this.x.CompareTo(referencePoint.x);
+            int yComparison = this.y.CompareTo(referencePoint.y);
             switch (xComparison)
             {
                 case 1:
@@ -335,12 +332,12 @@ namespace Geometry.Plane
                 throw new ArgumentException();
             }
 
-            decimal xDifference = reference.X - this.X;
-            decimal yDifference = reference.Y - this.Y;
+            decimal xDifference = reference.x - this.x;
+            decimal yDifference = reference.y - this.y;
 
             if (xDifference == 0)
             {
-                if (this.X > reference.X)
+                if (this.x > reference.x)
                 {
                     resultValue = Math.PI / 2;
                     return resultValue;
@@ -417,7 +414,7 @@ namespace Geometry.Plane
 
         public override string ToString()
         {
-            string resultString="{"+this.X+","+this.Y+"}";
+            string resultString = System.Text.Json.JsonSerializer.Serialize(this);
             return resultString;
         }
     }
@@ -444,6 +441,39 @@ namespace Geometry.Plane
                 default:
                     throw new Exception();
             }
+        }
+        public Segment(string jsonString) // I need to figure out how to refactor this and other things like this!
+        {
+            Point[] points = new Point[2];
+            try
+            {
+                points = Newtonsoft.Json.JsonConvert.DeserializeObject<Point[]>(jsonString);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
+            Point pointOne = points[0];
+            Point pointTwo = points[1];
+            switch (pointOne.CompareTo(pointTwo))
+            {
+                case 1:
+                    startingPoint = pointTwo;
+                    endPoint = pointOne;
+                    break;
+                case 0:
+                    startingPoint = pointOne;
+                    endPoint = pointTwo;
+                    break;
+                case -1:
+                    startingPoint = pointOne;
+                    endPoint = pointTwo;
+                    break;
+                default:
+                    throw new Exception();
+            }
+
         }
         public Point StartingPoint
         {
@@ -478,7 +508,7 @@ namespace Geometry.Plane
             Line tempLine = new Line(this);
             if (tempLine.ContainsPoint(query))
             {
-                if (query.X >= StartingPoint.X && query.X <= EndPoint.X)
+                if (query.x >= StartingPoint.x && query.x <= EndPoint.x)
                 {
                     result = true;
                 }
@@ -498,9 +528,9 @@ namespace Geometry.Plane
             if (currentSegmentLine.Equals(referenceSegmentLine))
             {
                 NumeralInterval currentSegmentXInterval = new NumeralInterval
-                    (this.StartingPoint.X, true, this.EndPoint.X, true);
+                    (this.StartingPoint.x, true, this.EndPoint.x, true);
                 NumeralInterval referenceSegmentXInterval = new NumeralInterval
-                    (referenceSegment.StartingPoint.X, true, referenceSegment.EndPoint.X, true);
+                    (referenceSegment.StartingPoint.x, true, referenceSegment.EndPoint.x, true);
 
                 if (currentSegmentXInterval.Intersects(referenceSegmentXInterval))
                 {
@@ -581,8 +611,8 @@ namespace Geometry.Plane
         {
             get
             {
-                decimal xDifference = EndPoint.X - StartingPoint.X;
-                decimal yDifference = EndPoint.Y - StartingPoint.Y;
+                decimal xDifference = EndPoint.x - StartingPoint.x;
+                decimal yDifference = EndPoint.y - StartingPoint.y;
                 decimal length = (decimal)Math.Sqrt(
                     (double)((xDifference * xDifference) * (yDifference * yDifference)));
                 return length;
@@ -596,21 +626,21 @@ namespace Geometry.Plane
     }
     public class Line
     {
-        LineType lineType;
-        private decimal a;
-        private decimal b;
+        LineType type;
         private decimal slope;
+        private decimal constantTerm;
         decimal yPosition;
         decimal xPosition;
 
-        public decimal A { get => a; set => a = value; }
-        public decimal B { get => b; set => b = value; }
+        public decimal Slope { get => slope; set => slope = value; } 
+        public decimal ConstantTerm { get => constantTerm; set => constantTerm = value; }
 
-        public Line(decimal a, decimal b)
+        public Line(decimal slope, decimal constantTerm)
         {
-            this.lineType = LineType.linearFunction;
-            this.A = a;
-            this.B = b;
+            if (slope == 0) this.type = LineType.parallelToXAxis;
+            else this.type = LineType.linearFunction;
+            this.Slope = slope;
+            this.ConstantTerm = constantTerm;
         }
         public Line(Point pointOne, Point pointTwo) : this(new Segment(pointOne, pointTwo))
         {
@@ -621,51 +651,137 @@ namespace Geometry.Plane
             Point point2 = segment.EndPoint;
             if (point1.Equals(point2)) throw new ArgumentException();
 
-            decimal xDifference = point2.X - point1.X;
-            decimal yDifference = point2.Y - point1.Y;
+            decimal xDifference = point2.x - point1.x;
+            decimal yDifference = point2.y - point1.y;
 
             if (xDifference == 0)
             {
-                this.lineType = LineType.parallelToYAxis;
-                this.yPosition = point1.Y;
+                this.type = LineType.parallelToYAxis;
+                this.yPosition = point1.y;
                 return;
             }
             if (yDifference == 0)
             {
-                this.lineType = LineType.parallelToXAxis;
-                this.xPosition = point1.X;
-                this.A = 0;
-                this.B = xPosition;
+                this.type = LineType.parallelToXAxis;
+                this.xPosition = point1.x;
+                this.Slope = 0;
+                this.ConstantTerm = xPosition;
                 return;
             }
             if ((xDifference != 0) && (yDifference != 0))
             {
                 decimal slope = yDifference / xDifference;
-                decimal yInterceptValue = point1.Y - (point1.X * slope);
-                this.A = slope;
-                this.B = yInterceptValue;
+                decimal yInterceptValue = point1.y - (point1.x * slope);
+                this.Slope = slope;
+                this.ConstantTerm = yInterceptValue;
             }
         }
         private decimal GetValue(decimal x)
         {
-            if (lineType == LineType.parallelToYAxis)
+            if (type == LineType.parallelToYAxis)
             {
                 throw new Exception();
             }
-            decimal resultValue = (A * x) + B;
+            decimal resultValue = (Slope * x) + ConstantTerm;
             return resultValue;
         }
         private decimal GetInverseValue(decimal y)
         {
-            if (A == 0) throw new Exception();
+            if (Slope == 0) throw new Exception();
 
-            decimal inverseValue = (y - B) / A;
+            decimal inverseValue = (y - ConstantTerm) / Slope;
             return inverseValue;
+        }
+        public QuadrantPosition GetRelativeQuadrantPosition(Point entryPoint)
+        {
+            QuadrantPosition result;
+            Line line = this;
+            decimal pointX = entryPoint.x;
+            decimal pointY = entryPoint.y;
+
+            int pointIsAboveLine = pointY.CompareTo(line.GetValue(pointX));
+            int pointIsToTheRightOfLine = pointX.CompareTo(line.GetInverseValue(pointY));
+            if (line.type == LineType.parallelToXAxis)
+            {
+                switch (pointIsAboveLine)
+                {
+                    case 1:
+                        result = QuadrantPosition.yAxisUp;
+                        break;
+                    case -1:
+                        result = QuadrantPosition.yAxisDown;
+                        break;
+                    case 0:
+                        result = QuadrantPosition.Equals;
+                        break;
+                    default:
+                        throw new Exception();
+                }
+                return result;
+            }
+            if (line.type == LineType.parallelToYAxis)
+            {
+                switch (pointIsToTheRightOfLine)
+                {
+                    case 1:
+                        result = QuadrantPosition.xAxisRight;
+                        break;
+                    case -1:
+                        result = QuadrantPosition.xAxisLeft;
+                        break;
+                    case 0:
+                        result = QuadrantPosition.Equals;
+                        break;
+                    default:
+                        throw new Exception();
+                }
+                return result;
+            }
+
+            int slopeIsPositive = line.slope.CompareTo(0);
+            switch (pointIsAboveLine)
+            {
+                case 1:
+                    switch (slopeIsPositive)
+                    {
+                        case 1:
+                            result = QuadrantPosition.IV;
+                            break;
+                        case -1:
+                            result = QuadrantPosition.I;
+                            break;
+                        default:
+                            throw new Exception();
+                    }
+                    break;
+                case -1:
+                    switch (slopeIsPositive)
+                    {
+                        case 1:
+                            result = QuadrantPosition.II;
+                            break;
+                        case -1:
+                            result = QuadrantPosition.III;
+                            break;
+                        default:
+                            throw new Exception();
+                            break;
+                    }
+                    break;
+                case 0:
+                    result = QuadrantPosition.Equals;
+                    break;
+                default:
+                    throw new Exception();
+            }
+
+            return result;
+            
         }
         private double GetAngleFromXAxis()
         {
             double result;
-            switch (this.lineType)
+            switch (this.type)
             {
                 case LineType.parallelToYAxis:
                     result = ((Math.PI) / 2);
@@ -674,7 +790,7 @@ namespace Geometry.Plane
                     result = 0;
                     break;
                 case LineType.linearFunction:
-                    result = Math.Atan((double)A);
+                    result = Math.Atan((double)Slope);
                     break;
                 default:
                     throw new Exception();
@@ -687,16 +803,16 @@ namespace Geometry.Plane
             Point pointOne;
             Point pointTwo;
             Point linePoint;
-            switch (this.lineType)
+            switch (this.type)
             {
                 case LineType.parallelToXAxis:
-                    decimal newXPosition = startingPoint.X;
+                    decimal newXPosition = startingPoint.x;
                     linePoint = new Point
                         (newXPosition, yPosition);
                     resultHeight = new Segment(startingPoint, linePoint);
                     break;
                 case LineType.parallelToYAxis:
-                    decimal newYPosition = startingPoint.Y;
+                    decimal newYPosition = startingPoint.y;
                     linePoint = new Point
                         (newYPosition, xPosition);
                     resultHeight = new Segment(startingPoint, linePoint);
@@ -713,16 +829,20 @@ namespace Geometry.Plane
         }
         public bool ContainsPoint(Point point)
         {
-            switch (this.lineType)
+            switch (this.type)
             {
                 case LineType.parallelToXAxis:
-                    if (point.Y == this.yPosition) return true;
+                    if (point.y == this.yPosition) return true;
                     else return false;
                 case LineType.parallelToYAxis:
-                    if (point.X == this.xPosition) return true;
+                    if (point.x == this.xPosition) return true;
                     else return false;
                 case LineType.linearFunction:
-                    if (this.GetValue(point.X) == point.Y)
+                    decimal valueOfThisLine = this.GetValue(point.x);
+                    decimal pointY = point.y;
+                    decimal absoluteDifference = Math.Abs(valueOfThisLine - pointY);
+
+                    if (absoluteDifference<Convert.ToDecimal(0.1))
                     {
                         return true;
                     }
@@ -737,102 +857,85 @@ namespace Geometry.Plane
             decimal resultHeightLength = newSection.Length;
             return resultHeightLength;
         }
+
         private Point FindHeightIntersectionPosition
             (Point entryPoint)
         {
-            Point intersectionPosition;
             Line line = this;
+            double pointX = Convert.ToDouble(entryPoint.x);
+            double pointY = Convert.ToDouble(entryPoint.y);
+            double xDifference;
+            double yDifference;
             decimal resultX;
             decimal resultY;
+            Point intersectionPosition;
 
-            decimal pointX = entryPoint.X;
-            decimal pointY = entryPoint.Y;
-
-            if (!(line.lineType == LineType.linearFunction))
+            if (!(line.type == LineType.linearFunction))
             {
-                if (line.lineType == LineType.parallelToXAxis)
+
+                if (line.type == LineType.parallelToXAxis)
                 {
-                    intersectionPosition = new Point(entryPoint.X, line.yPosition);
+                    intersectionPosition = new Point(Convert.ToDecimal(pointX), line.yPosition);
+                    return intersectionPosition;
                 }
-                if (line.lineType == LineType.parallelToXAxis)
+                if (line.type == LineType.parallelToYAxis)
                 {
-                    intersectionPosition = new Point(line.xPosition, entryPoint.Y);
+                    intersectionPosition = new Point(line.xPosition, Convert.ToDecimal(pointY));
+                    return intersectionPosition;
                 }
             }
+            QuadrantPosition relativeQuadrantPositionOfPoint = GetRelativeQuadrantPosition(entryPoint);
 
-            decimal lineTangent = Math.Abs(line.A);
-            double lineAngle = (double)
-                Math.Atan(Convert.ToDouble(lineTangent));
-            double formulaAngle = (((Math.PI) / 2) - lineAngle);
-
-            decimal c1;
-            decimal c2;
-                
-            decimal lineValueAtX = line.GetValue(pointX);
-            bool pointLiesOnLine;
-            int lineValueAtXToPointYComparison =
-                lineValueAtX.CompareTo(pointY);
-            if (lineValueAtXToPointYComparison == 0)
+            int yCoefficient;
+            int xCoefficient;
+            double yVectorOne;
+            double yVectorTwo;
+            double xVector;
+            switch (relativeQuadrantPositionOfPoint)
             {
-                pointLiesOnLine = true;
-            }
-            else pointLiesOnLine = false;
-
-            if (pointLiesOnLine)
-            {
-                return entryPoint;
-            }
-            switch (lineValueAtXToPointYComparison)
-            {
-                case 1:
-                    c2 = 1;
-                    switch (A.CompareTo(0))
-                    {
-                        case 1:
-                            c1 = -1;
-                            break;
-                        case 2:
-                            c1 = 1;
-                            break;
-                        default:
-                            throw new Exception();
-                    }
+                case QuadrantPosition.I:
+                    yCoefficient = -1;
+                    xCoefficient = -1;
                     break;
-                case -1:
-                    c2 = -1;
-                    switch (A.CompareTo(0))
-                    {
-                        case 1:
-                            c1 = 1;
-                            break;
-                        case 2:
-                            c1 = -1;
-                            break;
-                        default: throw new Exception();
-                    }
+                case QuadrantPosition.II:
+                    yCoefficient = 1;
+                    xCoefficient = -1;
+                    break;
+                case QuadrantPosition.III:
+                    yCoefficient = 1;
+                    xCoefficient = 1;
+                    break;
+                case QuadrantPosition.IV:
+                    yCoefficient = -1;
+                    xCoefficient = 1;
                     break;
                 default:
                     throw new Exception();
-            }
-            decimal yDifference =
-                ((
-                ((lineTangent * pointX) - pointY + this.B)
-                /
-                (c2 - lineTangent * c1 * (decimal)(1 / Math.Tan(formulaAngle)))
-                ));
-            decimal xDifference = (decimal)(1 / Math.Tan(formulaAngle))
-                * yDifference;
 
-            resultX = pointX + c1 * xDifference;
-            resultY = pointY + c2 * yDifference;
+            }
+
+            double alphaAngle = Math.Abs(line.GetAngleFromXAxis());
+            double alphaAngleSine = Math.Sin(alphaAngle);
+            double alphaAngleCosine = Math.Cos(alphaAngle);
+            yVectorOne = Math.Abs(pointY - Convert.ToDouble(line.GetValue(Convert.ToDecimal(pointX))));
+            double lineCathetus = yVectorOne * alphaAngleSine;
+            xVector = lineCathetus * alphaAngleCosine;
+            yVectorTwo = lineCathetus * alphaAngleSine;
+
+            xDifference = xCoefficient * xVector;
+            yDifference = (yVectorOne - yVectorTwo) * yCoefficient;
+            resultX = Convert.ToDecimal(pointX + xDifference);
+            resultY = Convert.ToDecimal(pointY + yDifference);
             intersectionPosition = new Point(resultX, resultY);
+
             return intersectionPosition;
         }
+
         public Point FindIntersection(Line referenceLine)
         {
-            bool thisLineIsParallelToYAxis = this.lineType == LineType.parallelToYAxis;
+            bool thisLineIsParallelToYAxis = this.type == LineType.parallelToYAxis;
             bool referenceLineIsParallelToYAxis =
-                referenceLine.lineType == LineType.parallelToYAxis;
+                referenceLine.type == LineType.parallelToYAxis;
             bool eitherLineIsParallelToYAxis = thisLineIsParallelToYAxis
                 || referenceLineIsParallelToYAxis;
 
@@ -872,20 +975,20 @@ namespace Geometry.Plane
             }
             else
             {
-                if (this.B == referenceLine.B)
+                if (this.ConstantTerm == referenceLine.ConstantTerm)
                 {
-                    intersectionPointY = this.B;
+                    intersectionPointY = this.ConstantTerm;
                     intersectionPoint = new Point(0, intersectionPointY);
                 }
                 else
                 {
-                    if (this.A == referenceLine.A)
+                    if (this.Slope == referenceLine.Slope)
                     {
                         intersectionPoint = null;
                     }
                     else
                     {
-                        intersectionPointX = -((this.B - referenceLine.B) / (this.A - referenceLine.A));
+                        intersectionPointX = -((this.ConstantTerm - referenceLine.ConstantTerm) / (this.Slope - referenceLine.Slope));
                         intersectionPointY = this.GetValue(intersectionPointX);
                         intersectionPoint = new Point(intersectionPointX, intersectionPointY);
                     }
@@ -916,7 +1019,7 @@ namespace Geometry.Plane
             xDifference = ((decimal)Math.Cos(perpendicularAngle)) * sampleLength;
             yDifference = ((decimal)Math.Sin(perpendicularAngle)) * sampleLength;
 
-            newPoint = new Point(intersection.X + xDifference, intersection.Y + yDifference);
+            newPoint = new Point(intersection.x + xDifference, intersection.y + yDifference);
             Segment sampleSection = new Segment(newPoint, intersection);
             resultLine = new Line(sampleSection);
             return resultLine;
@@ -929,18 +1032,18 @@ namespace Geometry.Plane
         {
             bool result;
             bool typesAreIncomparable =
-                ((this.lineType == LineType.parallelToYAxis &&
-                referenceLine.lineType != LineType.parallelToYAxis)
-                || (this.lineType != LineType.parallelToYAxis &&
-                referenceLine.lineType == LineType.parallelToYAxis));
+                ((this.type == LineType.parallelToYAxis &&
+                referenceLine.type != LineType.parallelToYAxis)
+                || (this.type != LineType.parallelToYAxis &&
+                referenceLine.type == LineType.parallelToYAxis));
             bool bothLinesAreParallelToYAxis =
-                this.lineType == LineType.parallelToYAxis
-                    && referenceLine.lineType == LineType.parallelToYAxis;
+                this.type == LineType.parallelToYAxis
+                    && referenceLine.type == LineType.parallelToYAxis;
 
-            if (this.lineType != LineType.parallelToYAxis
-                    && referenceLine.lineType != LineType.parallelToYAxis)
+            if (this.type != LineType.parallelToYAxis
+                    && referenceLine.type != LineType.parallelToYAxis)
             {
-                if (this.A == referenceLine.A && this.B == referenceLine.B)
+                if (this.Slope == referenceLine.Slope && this.ConstantTerm == referenceLine.ConstantTerm)
                 {
                     result = true;
                 }
@@ -964,7 +1067,7 @@ namespace Geometry.Plane
         }
         public override int GetHashCode()
         {
-            int resultHashCode = (A.GetHashCode() + B).GetHashCode();
+            int resultHashCode = (Slope.GetHashCode() + ConstantTerm).GetHashCode();
             return resultHashCode;
         }
     }
@@ -976,6 +1079,24 @@ namespace Geometry.Plane
             if (!InputIsValid(points))
             {
                 throw new ArgumentException();
+            }
+            vertices = new DLList<Point>();
+            for (int i = 0; i < points.Length; i++)
+            {
+                Point currentElement = points[i];
+                vertices.AddLast(currentElement);
+            }
+        }
+        public Polygon(string jsonString)
+        {
+            Point[] points;
+            try
+            {
+                points = Newtonsoft.Json.JsonConvert.DeserializeObject<Point[]>(jsonString);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
             }
             vertices = new DLList<Point>();
             for (int i = 0; i < points.Length; i++)
@@ -1067,9 +1188,9 @@ namespace Geometry.Plane
                 }
             }
         }
-        public Tuple<Point, Point> GetNeighbors(Point entry)
+        public Tuple<Point, Point> GetNeighbors(Point entryPoint)
         {
-            if (!this.ContainsPoint(entry))
+            if (!this.ContainsPoint(entryPoint))
             {
                 throw new ArgumentException("Entry value" +
                     "was not found.");
@@ -1082,7 +1203,7 @@ namespace Geometry.Plane
             Point currentValue = currentNode.Value;
             while (currentNode != null)
             {
-                if (currentValue.Equals(entry))
+                if (currentValue.Equals(entryPoint))
                 {
                     if (currentNode == vertices.First)
                     {
@@ -1107,15 +1228,15 @@ namespace Geometry.Plane
             }
             throw new Exception();
         }
-        public bool ContainsPoint(Point query)
+        public bool ContainsPoint(Point entryPoint)
         {
             foreach (Point point in vertices)
             {
-                if (point.Equals(query)) return true;
+                if (point.Equals(entryPoint)) return true;
             }
             return false;
         }
-        public bool SurroundsPoint(Point query)
+        public bool SurroundsPoint(Point entryPoint)
         {
             double totalRotation = 0;
             Point[] points = this.GetPoints();
@@ -1135,10 +1256,10 @@ namespace Geometry.Plane
                 }
                 else throw new Exception();
                 Step tempStep = new Step(points[i], points[nextPointId]);
-                currentStepRotationAngle = query.GetRelativeRotationAngle(tempStep);
+                currentStepRotationAngle = entryPoint.GetRelativeRotationAngle(tempStep);
                 totalRotation += currentStepRotationAngle;
             }
-            if (Math.Abs(totalRotation) == Math.PI * 2)
+            if (Math.Abs(totalRotation) > Math.PI * 1.75)
             {
                 return true;
             }
@@ -1165,18 +1286,8 @@ namespace Geometry.Plane
         public override string ToString()
         {
             Point[] points = this.GetPoints();
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("[");
-            foreach(Point point in points)
-            {
-                decimal tempX = point.X;
-                decimal tempY = point.Y;
-                stringBuilder.Append
-                    ("{\"x\":"+tempX+",\"y\":"+tempY+"}");
-            }
-            stringBuilder.Append("]");
-            string resultString = stringBuilder.ToString();
-            return resultString;
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(points);
+            return jsonString;
         }
 
     }
@@ -1328,5 +1439,5 @@ namespace Geometry.Plane
     {
         clockwise, counterclockwise
     }    
-    
+
 }

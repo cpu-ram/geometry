@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "KsSLYzoCs1MS3sie0lODiIylVFYB3KzSx6/HldLvDSTZvFQhQ2rkbsc/I+S2H0AUios1wvWWzpNYEAvC6ZXfUA==",
+  "dgSpecHash": "hLUhxfs1cx51ZjLR5mLMZipCCUVkI0MosA/Z2fWspt4MO7POQcBL3x0f4+PTgRWZ8aLNdnsOX5J0iz0aBEcd3g==",
   "success": true,
   "projectFilePath": "/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Geometry.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/petrstepanenko/.nuget/packages/newtonsoft.json/13.0.2/newtonsoft.json.13.0.2.nupkg.sha512"
+  ],
   "logs": []
 }
