@@ -502,13 +502,13 @@ namespace Geometry.Plane
             }
             else return false;
         }
-        public bool ContainsPoint(Point query)
+        public bool ContainsPoint(Point entryPoint)
         {
             bool result;
             Line tempLine = new Line(this);
-            if (tempLine.ContainsPoint(query))
+            if (tempLine.ContainsPoint(entryPoint))
             {
-                if (query.x >= StartingPoint.x && query.x <= EndPoint.x)
+                if (entryPoint.y >= StartingPoint.y && entryPoint.y <= EndPoint.y)
                 {
                     result = true;
                 }
@@ -626,7 +626,7 @@ namespace Geometry.Plane
     }
     public class Line
     {
-        LineType type;
+        private LineType type;
         private decimal slope;
         private decimal constantTerm;
         decimal yPosition;
@@ -634,11 +634,12 @@ namespace Geometry.Plane
 
         public decimal Slope { get => slope; set => slope = value; } 
         public decimal ConstantTerm { get => constantTerm; set => constantTerm = value; }
+        public LineType Type { get => type; set => type = value; }
 
         public Line(decimal slope, decimal constantTerm)
         {
-            if (slope == 0) this.type = LineType.parallelToXAxis;
-            else this.type = LineType.linearFunction;
+            if (slope == 0) this.Type = LineType.parallelToXAxis;
+            else this.Type = LineType.linearFunction;
             this.Slope = slope;
             this.ConstantTerm = constantTerm;
         }
@@ -656,14 +657,14 @@ namespace Geometry.Plane
 
             if (xDifference == 0)
             {
-                this.type = LineType.parallelToYAxis;
-                this.yPosition = point1.y;
+                this.Type = LineType.parallelToYAxis;
+                this.xPosition = point1.y;
                 return;
             }
             if (yDifference == 0)
             {
-                this.type = LineType.parallelToXAxis;
-                this.xPosition = point1.x;
+                this.Type = LineType.parallelToXAxis;
+                this.yPosition = point1.x;
                 this.Slope = 0;
                 this.ConstantTerm = xPosition;
                 return;
@@ -678,7 +679,7 @@ namespace Geometry.Plane
         }
         private decimal GetValue(decimal x)
         {
-            if (type == LineType.parallelToYAxis)
+            if (Type == LineType.parallelToYAxis)
             {
                 throw new Exception();
             }
@@ -701,7 +702,7 @@ namespace Geometry.Plane
 
             int pointIsAboveLine = pointY.CompareTo(line.GetValue(pointX));
             int pointIsToTheRightOfLine = pointX.CompareTo(line.GetInverseValue(pointY));
-            if (line.type == LineType.parallelToXAxis)
+            if (line.Type == LineType.parallelToXAxis)
             {
                 switch (pointIsAboveLine)
                 {
@@ -719,7 +720,7 @@ namespace Geometry.Plane
                 }
                 return result;
             }
-            if (line.type == LineType.parallelToYAxis)
+            if (line.Type == LineType.parallelToYAxis)
             {
                 switch (pointIsToTheRightOfLine)
                 {
@@ -781,7 +782,7 @@ namespace Geometry.Plane
         private double GetAngleFromXAxis()
         {
             double result;
-            switch (this.type)
+            switch (this.Type)
             {
                 case LineType.parallelToYAxis:
                     result = ((Math.PI) / 2);
@@ -803,7 +804,7 @@ namespace Geometry.Plane
             Point pointOne;
             Point pointTwo;
             Point linePoint;
-            switch (this.type)
+            switch (this.Type)
             {
                 case LineType.parallelToXAxis:
                     decimal newXPosition = startingPoint.x;
@@ -829,7 +830,7 @@ namespace Geometry.Plane
         }
         public bool ContainsPoint(Point point)
         {
-            switch (this.type)
+            switch (this.Type)
             {
                 case LineType.parallelToXAxis:
                     if (point.y == this.yPosition) return true;
@@ -870,15 +871,15 @@ namespace Geometry.Plane
             decimal resultY;
             Point intersectionPosition;
 
-            if (!(line.type == LineType.linearFunction))
+            if (!(line.Type == LineType.linearFunction))
             {
 
-                if (line.type == LineType.parallelToXAxis)
+                if (line.Type == LineType.parallelToXAxis)
                 {
                     intersectionPosition = new Point(Convert.ToDecimal(pointX), line.yPosition);
                     return intersectionPosition;
                 }
-                if (line.type == LineType.parallelToYAxis)
+                if (line.Type == LineType.parallelToYAxis)
                 {
                     intersectionPosition = new Point(line.xPosition, Convert.ToDecimal(pointY));
                     return intersectionPosition;
@@ -933,9 +934,9 @@ namespace Geometry.Plane
 
         public Point FindIntersection(Line referenceLine)
         {
-            bool thisLineIsParallelToYAxis = this.type == LineType.parallelToYAxis;
+            bool thisLineIsParallelToYAxis = this.Type == LineType.parallelToYAxis;
             bool referenceLineIsParallelToYAxis =
-                referenceLine.type == LineType.parallelToYAxis;
+                referenceLine.Type == LineType.parallelToYAxis;
             bool eitherLineIsParallelToYAxis = thisLineIsParallelToYAxis
                 || referenceLineIsParallelToYAxis;
 
@@ -1032,16 +1033,16 @@ namespace Geometry.Plane
         {
             bool result;
             bool typesAreIncomparable =
-                ((this.type == LineType.parallelToYAxis &&
-                referenceLine.type != LineType.parallelToYAxis)
-                || (this.type != LineType.parallelToYAxis &&
-                referenceLine.type == LineType.parallelToYAxis));
+                ((this.Type == LineType.parallelToYAxis &&
+                referenceLine.Type != LineType.parallelToYAxis)
+                || (this.Type != LineType.parallelToYAxis &&
+                referenceLine.Type == LineType.parallelToYAxis));
             bool bothLinesAreParallelToYAxis =
-                this.type == LineType.parallelToYAxis
-                    && referenceLine.type == LineType.parallelToYAxis;
+                this.Type == LineType.parallelToYAxis
+                    && referenceLine.Type == LineType.parallelToYAxis;
 
-            if (this.type != LineType.parallelToYAxis
-                    && referenceLine.type != LineType.parallelToYAxis)
+            if (this.Type != LineType.parallelToYAxis
+                    && referenceLine.Type != LineType.parallelToYAxis)
             {
                 if (this.Slope == referenceLine.Slope && this.ConstantTerm == referenceLine.ConstantTerm)
                 {
@@ -1332,7 +1333,7 @@ namespace Geometry.Plane
         }
     }
 
-    enum LineType
+    public enum LineType
     {
         linearFunction, parallelToYAxis, parallelToXAxis
     }

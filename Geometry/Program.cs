@@ -10,7 +10,7 @@ namespace Geometry
     {
         static void Main(string[] args)
         {
-            TestGeometry();
+            TestSegmentContainsPoint();
         }
         public static void TestGeometry()
         {
@@ -32,6 +32,20 @@ namespace Geometry
             Segment segmentTwo = new Segment(pointThree, pointFour);
 
             bool intersects = segmentOne.Intersects(segmentTwo);
+            Console.WriteLine();
+        }
+        public static void TestSegmentAndPolygonIntersection()
+        {
+            Polygon polygon = new Polygon("[{\"x\":255,\"y\":482},{\"x\":430,\"y\":78},{\"x\":1,\"y\":156}]");
+            Segment segment = new Segment("[{\"x\":1,\"y\":156},{\"x\":1,\"y\":329}]");
+            Point[] intersections = segment.FindIntersections(polygon);
+            Console.WriteLine();
+        }
+        public static void TestSegmentContainsPoint()
+        {
+            Segment segment = new Segment("[{\"x\":1,\"y\":125},{\"x\":1,\"y\":326}]");
+            Point point = new Point(1,-382);
+            bool contains = segment.ContainsPoint(point);
             Console.WriteLine();
         }
         public static void TestConvexHull()
