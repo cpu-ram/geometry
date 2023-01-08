@@ -65,9 +65,16 @@ namespace Geometry.Plane
             bool ExpandEdge(Segment edge, ref Polygon polygon,
                 Dictionary<decimal, SortedSet<decimal>> xToYDictionary)
             {
+                if(Convert.ToString(edge) ==
+                    "{{\"x\":136.5,\"y\":155},{\"x\":311.5,\"y\":90}}") //debug
+                {
+                    Console.Write("");
+                }
                 Point endPointOne = edge.StartingPoint;
                 Point endPointTwo = edge.EndPoint;
                 Point[] pointsOutsideEdge = FindPointsPastEdge(edge, polygon);
+
+                Console.Write(""); //debug
 
                 if (pointsOutsideEdge.Length > 0)
                 {
@@ -104,6 +111,13 @@ namespace Geometry.Plane
                     foreach (decimal currentY in filteredYSet)
                     {
                         Point currentPoint = new Point(currentX, currentY);
+
+                        if( 
+                            currentPoint.x==Convert.ToDecimal(213.5)
+                            && currentPoint.y==Convert.ToDecimal(110)) // debug
+                        {
+                            Console.Write("");
+                        }
 
                         if (!polygon.ContainsPoint(currentPoint)
                                 && !polygon.SurroundsPoint(currentPoint)

@@ -36,21 +36,23 @@ namespace Geometry
         }
         public static void TestSegmentAndPolygonIntersection()
         {
-            Polygon polygon = new Polygon("[{\"x\":255,\"y\":482},{\"x\":430,\"y\":78},{\"x\":1,\"y\":156}]");
-            Segment segment = new Segment("[{\"x\":1,\"y\":156},{\"x\":1,\"y\":329}]");
+            Polygon polygon = new Polygon("[{\"x\":386.5,\"y\":436},{\"x\":311.5,\"y\":90},{\"x\":136.5,\"y\":155},{\"x\":133.5,\"y\":296}]");
+            Segment segment = new Segment("[{\"x\":136.5,\"y\":155},{\"x\":213.5,\"y\":110}]");
             Point[] intersections = segment.FindIntersections(polygon);
             Console.WriteLine();
         }
         public static void TestSegmentContainsPoint()
         {
-            Segment segment = new Segment("[{\"x\":1,\"y\":125},{\"x\":1,\"y\":326}]");
-            Point point = new Point(1,-382);
+            Segment segment = new Segment("[{\"x\":136.5,\"y\":155},{\"x\":213.5,\"y\":110}]");
+            Point point = new Point(Convert.ToDecimal(136.5000000000), Convert.ToDecimal(155.0000000000));
             bool contains = segment.ContainsPoint(point);
             Console.WriteLine();
         }
         public static void TestConvexHull()
         {
-            
+            PointSet points = new PointSet("[{\"x\":136.5,\"y\":155},{\"x\":311.5,\"y\":90},{\"x\":213.5,\"y\":110},{\"x\":133.5,\"y\":296},{\"x\":386.5,\"y\":436}]");
+            string convexHullString = points.FindConvexHull();
+            Console.WriteLine(convexHullString);
         }
         
     }

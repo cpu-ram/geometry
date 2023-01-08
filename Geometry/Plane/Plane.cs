@@ -489,6 +489,21 @@ namespace Geometry.Plane
                 return endPoint;
             }
         }
+        public decimal MaxY
+        {
+            get
+            {
+               return startingPoint.y > endPoint.y ? startingPoint.y : endPoint.y;
+            }
+        }
+        public decimal MinY
+        {
+            get
+            {
+                return startingPoint.y < endPoint.y ? startingPoint.y : endPoint.y;
+            }
+        }
+
         internal Tuple<Point, Point> GetPoints()
         {
             return new Tuple<Point, Point>(StartingPoint, EndPoint);
@@ -502,13 +517,14 @@ namespace Geometry.Plane
             }
             else return false;
         }
-        public bool ContainsPoint(Point entryPoint)
+        public bool ContainsPoint(Point entryPoint) //fix this!
         {
             bool result;
             Line tempLine = new Line(this);
+
             if (tempLine.ContainsPoint(entryPoint))
             {
-                if (entryPoint.y >= StartingPoint.y && entryPoint.y <= EndPoint.y)
+                if (entryPoint.y >= this.MinY && entryPoint.y <= this.MaxY)
                 {
                     result = true;
                 }

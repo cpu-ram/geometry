@@ -1,13 +1,20 @@
 ﻿<Properties GitUserInfo="UsingMD" StartupConfiguration="{A15BCDCC-D47F-456B-8EE2-FF6480D29996}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Geometry/Plane/Plane.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Geometry/Program.cs">
     <Files>
-      <File FileName="Geometry/Program.cs" Line="15" Column="40" />
-      <File FileName="Geometry/Plane/Plane.cs" Line="930" Column="1" />
+      <File FileName="Geometry/Program.cs" Line="49" Column="28" />
+      <File FileName="Geometry/Plane/Plane.cs" />
       <File FileName="Geometry/Plane/FindConvexHull.cs" />
     </Files>
     <Pads>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State />
+        <State>
+          <Value>this</Value>
+          <Value>StartingPoint</Value>
+          <Value>EndPoint</Value>
+          <Value>entryPoint</Value>
+          <Value>entryPoint.y</Value>
+          <Value>End</Value>
+        </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
@@ -16,8 +23,14 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Plane/Plane.cs" relfile="Geometry/Plane/Plane.cs" line="1086" column="9" />
-      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Program.cs" relfile="Geometry/Program.cs" line="42" column="13" />
+      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Plane/FindConvexHull.cs" relfile="Geometry/Plane/FindConvexHull.cs" line="71" column="21" />
+      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Plane/FindConvexHull.cs" relfile="Geometry/Plane/FindConvexHull.cs" line="119" column="29" />
+      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Plane/FindConvexHull.cs" relfile="Geometry/Plane/FindConvexHull.cs" line="80" column="17" />
+      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Plane/FindConvexHull.cs" relfile="Geometry/Plane/FindConvexHull.cs" line="122" column="25" />
+      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Plane/FindConvexHull.cs" relfile="Geometry/Plane/FindConvexHull.cs" line="132" column="29" />
+      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Plane/Plane.cs" relfile="Geometry/Plane/Plane.cs" line="601" column="9" />
+      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Plane/Plane.cs" relfile="Geometry/Plane/Plane.cs" line="608" column="17" />
+      <Breakpoint file="/Users/petrstepanenko/Projects/Geometry_CSharp/Geometry/Program.cs" relfile="Geometry/Program.cs" line="49" column="13" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
